@@ -1,0 +1,38 @@
+name: deploy-all
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install kubectl
+        run: |
+          ARCH=$(dpkg --print-architecture)
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/$ARCH/kubectl"
+
+      - name: Configure kubeconfig
+        env:
+          KUBECONFIG: ${{secrets.KUBECONFIG}}
+        run: |
+          echo "$KUBECONFIG" > /tmp/kubeconfig
+          chmod +x kubectl
+          mkdir -p ~/.local/bin
+          mv ./kubectl ~/.local/bin/kubectl
+
+      - name: Copy files to pod
+        run: |
+          POD_NAME=$(kubectl --kubeconfig /tmp/kubeconfig get pod -n palworld -l app=palworld-server -o jsonpath="{.items[0].metadata.name}")
+          kubectl --kubeconfig /tmp/kubeconfig cp /home/runner/work/lockcept-palworld-config/lockcept-palworld-config/raw/WorldOption.sav palworld/$POD_NAME:/palworld/Pal/Saved/SaveGames/0/C94042DD20BD4581B70965FA0B04CBDD/test/WorldOption.sav
+          kubectl --kubeconfig /tmp/kubeconfig cp /home/runner/work/lockcept-palworld-config/lockcept-palworld-config/raw/LevelMeta.sav palworld/$POD_NAME:/palworld/Pal/Saved/SaveGames/0/C94042DD20BD4581B70965FA0B04CBDD/test/LevelMeta.sav
+          kubectl --kubeconfig /tmp/kubeconfig cp /home/runner/work/lockcept-palworld-config/lockcept-palworld-config/raw/LocalData.sav palworld/$POD_NAME:/palworld/Pal/Saved/SaveGames/0/C94042DD20BD4581B70965FA0B04CBDD/test/LocalData.sav
+          kubectl --kubeconfig /tmp/kubeconfig cp /home/runner/work/lockcept-palworld-config/lockcept-palworld-config/raw/Level.sav palworld/$POD_NAME:/palworld/Pal/Saved/SaveGames/0/C94042DD20BD4581B70965FA0B04CBDD/test/Level.sav
+
+      - name: Restart deployment
+        run: |
+          kubectl --kubeconfig /tmp/kubeconfig rollout restart deployment/palworld-server -n palworld

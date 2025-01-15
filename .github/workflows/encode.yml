@@ -1,0 +1,65 @@
+name: encode
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  checks: write
+  pull-requests: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.12"
+
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip
+
+      - name: Clone and prepare PalWorldSaveTools
+        run: |
+          git clone https://github.com/deafdudecomputers/PalWorldSaveTools.git /tmp/PalWorldSaveTools
+          cd /tmp/PalWorldSaveTools
+          pip install -r requirements.txt
+          cp /home/runner/work/lockcept-palworld-config/lockcept-palworld-config/*.json .
+
+      - name: Convert JSON files to save format
+        working-directory: /tmp/PalWorldSaveTools
+        run: |
+          python convert.py --from-json "WorldOption.sav.json"
+          python convert.py --from-json "LevelMeta.sav.json"
+          python convert.py --from-json "LocalData.sav.json"
+
+      - name: Copy converted save files back to repository
+        run: |
+          WORK_DIR="/home/runner/work/lockcept-palworld-config/lockcept-palworld-config/raw"
+          mkdir -p $WORK_DIR
+          cp /tmp/PalWorldSaveTools/WorldOption.sav $WORK_DIR/
+          cp /tmp/PalWorldSaveTools/LevelMeta.sav $WORK_DIR/
+          cp /tmp/PalWorldSaveTools/LocalData.sav $WORK_DIR/
+
+      - name: Check if there are any changes 
+        id: verify_diff
+        run: |
+          cd /home/runner/work/lockcept-palworld-config/lockcept-palworld-config
+          git diff --quiet . || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and push updated save files
+        if: steps.verify_diff.outputs.changed == 'true'
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          cd /home/runner/work/lockcept-palworld-config/lockcept-palworld-config
+          git add raw/
+          git commit -m "Update raw configs"
+          git push origin main
