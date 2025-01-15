@@ -28,10 +28,10 @@ jobs:
       - name: Copy files to pod
         run: |
           POD_NAME=$(kubectl --kubeconfig /tmp/kubeconfig get pod -n palworld -l app=palworld-server -o jsonpath="{.items[0].metadata.name}")
-          kubectl --kubeconfig /tmp/kubeconfig cp /home/runner/work/lockcept-palworld-config/lockcept-palworld-config/raw/WorldOption.sav palworld/$POD_NAME:/palworld/Pal/Saved/SaveGames/0/C94042DD20BD4581B70965FA0B04CBDD/test/WorldOption.sav
-          kubectl --kubeconfig /tmp/kubeconfig cp /home/runner/work/lockcept-palworld-config/lockcept-palworld-config/raw/LevelMeta.sav palworld/$POD_NAME:/palworld/Pal/Saved/SaveGames/0/C94042DD20BD4581B70965FA0B04CBDD/test/LevelMeta.sav
-          kubectl --kubeconfig /tmp/kubeconfig cp /home/runner/work/lockcept-palworld-config/lockcept-palworld-config/raw/LocalData.sav palworld/$POD_NAME:/palworld/Pal/Saved/SaveGames/0/C94042DD20BD4581B70965FA0B04CBDD/test/LocalData.sav
-          kubectl --kubeconfig /tmp/kubeconfig cp /home/runner/work/lockcept-palworld-config/lockcept-palworld-config/raw/Level.sav palworld/$POD_NAME:/palworld/Pal/Saved/SaveGames/0/C94042DD20BD4581B70965FA0B04CBDD/test/Level.sav
+          kubectl --kubeconfig /tmp/kubeconfig cp /home/runner/work/lockcept-palworld-config/lockcept-palworld-config/raw/WorldOption.sav palworld/$POD_NAME:/palworld/Pal/Saved/SaveGames/0/C94042DD20BD4581B70965FA0B04CBDD/WorldOption.sav
+          kubectl --kubeconfig /tmp/kubeconfig cp /home/runner/work/lockcept-palworld-config/lockcept-palworld-config/raw/LevelMeta.sav palworld/$POD_NAME:/palworld/Pal/Saved/SaveGames/0/C94042DD20BD4581B70965FA0B04CBDD/LevelMeta.sav
+          kubectl --kubeconfig /tmp/kubeconfig cp /home/runner/work/lockcept-palworld-config/lockcept-palworld-config/raw/LocalData.sav palworld/$POD_NAME:/palworld/Pal/Saved/SaveGames/0/C94042DD20BD4581B70965FA0B04CBDD/LocalData.sav
+          kubectl --kubeconfig /tmp/kubeconfig cp /home/runner/work/lockcept-palworld-config/lockcept-palworld-config/raw/Level.sav palworld/$POD_NAME:/palworld/Pal/Saved/SaveGames/0/C94042DD20BD4581B70965FA0B04CBDD/Level.sav
 
       - name: Restart deployment
         run: |
