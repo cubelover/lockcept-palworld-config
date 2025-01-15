@@ -22,4 +22,5 @@
 - `restart.yml` 워크플로우를 실행하여, Kubernetes 클러스터에서 Palworld 서버 배포를 재시작합니다.
 
 #### 4. Palworld 서버 배포
-- `deploy-all.yml` 워크플로우를 실행하여, 서버 설정 파일을 Kubernetes 파드에 복사하고, 배포를 재시작하여 변경사항을 적용합니다.
+- `deploy-worldoption.yml` 워크플로우를 실행하여, 서버 설정 파일을 Kubernetes 파드에 복사하고, 배포를 재시작하여 변경사항을 적용합니다.
+- `deploy-all,yml` 워크플로우를 실행하여, 전체 설정파일을 덮어쓸 수 있습니다. `Level.sav` 파일이 포함되어 진행사항이 초기화 될 수 있습니다.
