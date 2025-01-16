@@ -449,6 +449,11 @@
 							"value": false,
 							"id": null,
 							"type": "BoolProperty"
+						},
+						"SupplyDropSpan": {
+							"id": null,
+							"value": 60,
+							"type": "IntProperty"
 						}
 					},
 					"type": "StructProperty"
