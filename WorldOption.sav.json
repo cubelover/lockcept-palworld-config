@@ -339,12 +339,12 @@
 						},
 						"DayTimeSpeedRate": {
 							"id": null,
-							"value": 0.8221052885055542,
+							"value": 1.0,
 							"type": "FloatProperty"
 						},
 						"NightTimeSpeedRate": {
 							"id": null,
-							"value": 1.9955263137817383,
+							"value": 1.0,
 							"type": "FloatProperty"
 						},
 						"ExpRate": {
